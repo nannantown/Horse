@@ -677,3 +677,288 @@ body {
   background-size: 10px;
   padding-right: 26px;
 }
+
+/* ---------- Pick Hero (推奨買い目) ---------- */
+.pick-hero {
+  background: linear-gradient(135deg, var(--accent) 0%, #073a23 100%);
+  color: #fff;
+  border: 0;
+  padding: 16px;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.pick-hero::after {
+  content: '🏇';
+  position: absolute;
+  right: -10px;
+  top: -10px;
+  font-size: 80px;
+  opacity: 0.06;
+}
+.pick-hero-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+.pick-hero-tag {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--accent-2);
+}
+.pick-hero-title {
+  margin: 4px 0 0;
+  font-size: 18px;
+  font-weight: 800;
+}
+.pick-hero-meta {
+  text-align: right;
+  font-size: 11px;
+  opacity: 0.8;
+  line-height: 1.4;
+}
+.pick-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+}
+.pick-item {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.pick-mark {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.pick-info { min-width: 0; flex: 1; }
+.pick-label {
+  font-size: 10px;
+  opacity: 0.75;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.pick-name {
+  font-size: 12.5px;
+  font-weight: 700;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- Bet list ---------- */
+.bet-list { display: flex; flex-direction: column; }
+.bet-row {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+}
+.bet-row:first-child { border-top: 0; padding-top: 4px; }
+.bet-type {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 6px;
+  border-radius: 6px;
+  text-align: center;
+}
+.bet-combo {
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.3px;
+  word-break: break-all;
+}
+.bet-conf {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 99px;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.bet-conf-強 { background: var(--accent); color: #fff; }
+.bet-conf-中 { background: var(--accent-soft); color: var(--accent); }
+.bet-conf-妙味 { background: #8a6fb8; color: #fff; }
+.bet-conf-安定 { background: #4a7c59; color: #fff; }
+
+/* ---------- Legend ---------- */
+.legend-card {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 4px;
+}
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.legend-mark {
+  font-size: 16px;
+  font-weight: 800;
+  width: 16px;
+  text-align: center;
+}
+
+/* ---------- Horse Analysis Card ---------- */
+.horse-grid { display: flex; flex-direction: column; gap: 10px; }
+.horse-analyze {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: var(--shadow);
+}
+.ha-top {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  gap: 12px;
+  align-items: flex-start;
+}
+.ha-mark {
+  text-align: center;
+  flex-shrink: 0;
+}
+.ha-mark-char {
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1;
+}
+.ha-mark-label {
+  font-size: 10px;
+  font-weight: 700;
+  margin-top: 2px;
+  letter-spacing: 0.5px;
+}
+.ha-body { min-width: 0; }
+.ha-row1 {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.ha-popular {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 99px;
+  letter-spacing: 0.3px;
+}
+.ha-popular.pop-top { background: #c4302b; color: #fff; }
+.ha-popular.pop-mid { background: var(--accent); color: #fff; }
+.ha-popular.pop-low { background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border); }
+.ha-num {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+.ha-name {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  margin: 2px 0;
+}
+.ha-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+.ha-odds {
+  text-align: right;
+  flex-shrink: 0;
+}
+.ha-odds-val {
+  font-size: 22px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-2);
+  line-height: 1;
+}
+.ha-odds-unit {
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.7;
+  margin-left: 1px;
+}
+.ha-odds-lbl {
+  font-size: 9.5px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  font-weight: 600;
+}
+.ha-comment {
+  background: var(--surface-2);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  margin: 12px 0 10px;
+  color: var(--text);
+}
+.ha-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.ha-stat { text-align: center; }
+.ha-stat-val {
+  font-size: 16px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.ha-stat-unit {
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.7;
+}
+.ha-stat-lbl {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  font-weight: 600;
+}
+.ev-badge {
+  display: inline-block;
+  margin-top: 8px;
+  background: linear-gradient(135deg, #8a6fb8, #6b5395);
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 99px;
+  letter-spacing: 0.5px;
+}
+
+.edit-toggle {
+  font-size: 13px !important;
+  padding: 10px !important;
+}
