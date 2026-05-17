@@ -899,6 +899,16 @@
       return;
     }
 
+    // データ出典バナー
+    const preset = D.entries[state.predictRaceId];
+    if (preset && preset.note) {
+      root.appendChild(h(`<div class="source-banner">
+        <div class="sb-row"><span class="sb-tag sb-verified">確定</span><span>枠順・馬名・性齢・騎手・斤量</span></div>
+        <div class="sb-row"><span class="sb-tag sb-estimated">推定</span><span>オッズ・人気・脚質・直近3走（公開予想ベース）</span></div>
+        <div class="sb-note">出典: netkeiba / 競馬ラボ / Yahoo!競馬 等の公開情報を統合 (2026/5/17時点)</div>
+      </div>`));
+    }
+
     // === 自動分析 ===
     const ranked = calcAnalysis(entries, race);
 

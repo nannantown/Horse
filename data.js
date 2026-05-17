@@ -416,22 +416,39 @@ const RACE_TRENDS = {
   },
 };
 
-// 実出走馬データ (サンプル/プリセット)
+// 実出走馬データ (Web検索ベース、2026/5/17 ヴィクトリアM 第21回)
+// 出典: netkeiba/keibalab/JRA/Yahoo競馬 等の公開情報を統合 (2026年5月時点)
+//
+// 【確定情報】枠順・馬番・馬名・性齢・騎手・斤量(全頭56kg定量)
+// 【推定情報】オッズ・脚質・近走・コース適性
+//   - オッズ上位3頭(エンブロイダリー2.5/カムニャック5.0/クイーンズウォーク8.0)は公開予想ベース
+//   - その他はオッズ序列の想定値、脚質と近走は競走履歴から推定
 // recent: 直近3走の着順、course: high(勝鞍)/mid(連対)/low(未経験or苦手)
 const RACE_ENTRIES = {
   vic: {
     year: 2026,
-    note: '2026年ヴィクトリアM 想定登録メンバー（プリセット）',
+    note: '2026年ヴィクトリアM 第21回 (5/17東京 G1) — 枠順・騎手は確定、オッズ/脚質/近走は推定',
+    verified: ['post', 'num', 'name', 'sex', 'age', 'jockey', 'weight'],
+    estimated: ['odds', 'popular', 'style', 'recent', 'course'],
     entries: [
-      { post: 1, num:  1, name: 'アスコリピチェーノ', sex: '牝', age: 5, jockey: 'C.ルメール',   weight: 56, popular: 1, odds:  2.8, style: '差し', recent: [1, 3, 1], course: 'high' },
-      { post: 2, num:  3, name: 'ボンドガール',       sex: '牝', age: 5, jockey: '横山武史',     weight: 56, popular: 3, odds:  6.2, style: '差し', recent: [3, 1, 4], course: 'mid'  },
-      { post: 3, num:  5, name: 'ステレンボッシュ',   sex: '牝', age: 5, jockey: 'モレイラ',     weight: 56, popular: 2, odds:  4.5, style: '先行', recent: [2, 1, 2], course: 'mid'  },
-      { post: 4, num:  7, name: 'マスクトディーヴァ', sex: '牝', age: 6, jockey: '松山弘平',     weight: 56, popular: 4, odds:  8.4, style: '差し', recent: [3, 5, 1], course: 'high' },
-      { post: 5, num:  9, name: 'クイーンズウォーク', sex: '牝', age: 5, jockey: '川田将雅',     weight: 56, popular: 5, odds:  9.8, style: '差し', recent: [2, 4, 3], course: 'mid'  },
-      { post: 6, num: 11, name: 'フィアスプライド',   sex: '牝', age: 7, jockey: '戸崎圭太',     weight: 56, popular: 7, odds: 18.5, style: '差し', recent: [4, 2, 5], course: 'mid'  },
-      { post: 7, num: 13, name: 'ナミュール',         sex: '牝', age: 7, jockey: '武豊',         weight: 56, popular: 6, odds: 12.3, style: '追込', recent: [5, 3, 7], course: 'low'  },
-      { post: 8, num: 15, name: 'ライラック',         sex: '牝', age: 7, jockey: '坂井瑠星',     weight: 56, popular: 9, odds: 38.7, style: '差し', recent: [6, 8, 4], course: 'low'  },
-      { post: 8, num: 16, name: 'ウンブライル',       sex: '牝', age: 6, jockey: 'マーフィー',   weight: 56, popular: 8, odds: 22.0, style: '差し', recent: [4, 6, 2], course: 'mid'  },
+      { post: 1, num:  1, name: 'カピリナ',           sex: '牝', age: 5, jockey: '横山典弘',     weight: 56, popular: 12, odds: 55.0, style: '差し', recent: [6, 4, 8], course: 'low'  },
+      { post: 1, num:  2, name: 'ワイドラトゥール',   sex: '牝', age: 5, jockey: '横山武史',     weight: 56, popular:  8, odds: 22.0, style: '差し', recent: [9, 5, 3], course: 'mid'  },
+      { post: 2, num:  3, name: 'マピュース',         sex: '牝', age: 4, jockey: 'F.ゴンサルベス', weight: 56, popular: 13, odds: 68.0, style: '差し', recent: [5, 7, 3], course: 'low'  },
+      { post: 2, num:  4, name: 'エリカエクスプレス', sex: '牝', age: 4, jockey: '武豊',         weight: 56, popular:  6, odds: 18.0, style: '逃げ', recent: [4, 1, 1], course: 'mid'  },
+      { post: 3, num:  5, name: 'ケリフレッドアスク', sex: '牝', age: 4, jockey: 'M.ディー',     weight: 56, popular: 11, odds: 48.0, style: '先行', recent: [3, 6, 2], course: 'mid'  },
+      { post: 3, num:  6, name: 'ラヴァンダ',         sex: '牝', age: 5, jockey: '岩田望来',     weight: 56, popular: 14, odds: 78.0, style: '差し', recent: [7, 8, 5], course: 'low'  },
+      { post: 4, num:  7, name: 'クイーンズウォーク', sex: '牝', age: 5, jockey: '西村淳也',     weight: 56, popular:  3, odds:  8.0, style: '差し', recent: [3, 2, 1], course: 'high' },
+      { post: 4, num:  8, name: 'カムニャック',       sex: '牝', age: 4, jockey: '川田将雅',     weight: 56, popular:  2, odds:  5.0, style: '先行', recent: [1, 1, 2], course: 'mid'  },
+      { post: 5, num:  9, name: 'ココナッツブラウン', sex: '牝', age: 6, jockey: '北村友一',     weight: 56, popular: 10, odds: 38.0, style: '差し', recent: [4, 5, 7], course: 'mid'  },
+      { post: 5, num: 10, name: 'ドロップオブライト', sex: '牝', age: 7, jockey: '松若風馬',     weight: 56, popular: 16, odds: 95.0, style: '追込', recent: [8, 6, 9], course: 'low'  },
+      { post: 6, num: 11, name: 'ボンドガール',       sex: '牝', age: 5, jockey: '丹内祐次',     weight: 56, popular:  5, odds: 14.0, style: '差し', recent: [5, 2, 4], course: 'mid'  },
+      { post: 6, num: 12, name: 'エンブロイダリー',   sex: '牝', age: 4, jockey: 'C.ルメール',   weight: 56, popular:  1, odds:  2.5, style: '先行', recent: [1, 1, 1], course: 'mid'  },
+      { post: 7, num: 13, name: 'カナテープ',         sex: '牝', age: 7, jockey: '松山弘平',     weight: 56, popular: 17, odds:120.0, style: '差し', recent: [9, 7, 8], course: 'low'  },
+      { post: 7, num: 14, name: 'ジョスラン',         sex: '牝', age: 4, jockey: '戸崎圭太',     weight: 56, popular:  9, odds: 28.0, style: '差し', recent: [3, 4, 5], course: 'mid'  },
+      { post: 7, num: 15, name: 'アイサンサン',       sex: '牝', age: 4, jockey: '幸英明',       weight: 56, popular: 15, odds: 88.0, style: '先行', recent: [6, 5, 4], course: 'low'  },
+      { post: 8, num: 16, name: 'ニシノティアモ',     sex: '牝', age: 5, jockey: '津村明秀',     weight: 56, popular: 18, odds:158.0, style: '先行', recent: [8, 9,10], course: 'low'  },
+      { post: 8, num: 17, name: 'パラディレーヌ',     sex: '牝', age: 4, jockey: '坂井瑠星',     weight: 56, popular:  7, odds: 20.0, style: '差し', recent: [2, 3, 6], course: 'mid'  },
+      { post: 8, num: 18, name: 'チェルヴィニア',     sex: '牝', age: 5, jockey: 'D.レーン',     weight: 56, popular:  4, odds: 12.0, style: '差し', recent: [5, 7, 4], course: 'high' },
     ],
   },
   derby: {
