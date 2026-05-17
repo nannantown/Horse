@@ -416,11 +416,45 @@ const RACE_TRENDS = {
   },
 };
 
+// 実出走馬データ (サンプル/プリセット)
+// recent: 直近3走の着順、course: high(勝鞍)/mid(連対)/low(未経験or苦手)
+const RACE_ENTRIES = {
+  vic: {
+    year: 2026,
+    note: '2026年ヴィクトリアM 想定登録メンバー（プリセット）',
+    entries: [
+      { post: 1, num:  1, name: 'アスコリピチェーノ', sex: '牝', age: 5, jockey: 'C.ルメール',   weight: 56, popular: 1, odds:  2.8, style: '差し', recent: [1, 3, 1], course: 'high' },
+      { post: 2, num:  3, name: 'ボンドガール',       sex: '牝', age: 5, jockey: '横山武史',     weight: 56, popular: 3, odds:  6.2, style: '差し', recent: [3, 1, 4], course: 'mid'  },
+      { post: 3, num:  5, name: 'ステレンボッシュ',   sex: '牝', age: 5, jockey: 'モレイラ',     weight: 56, popular: 2, odds:  4.5, style: '先行', recent: [2, 1, 2], course: 'mid'  },
+      { post: 4, num:  7, name: 'マスクトディーヴァ', sex: '牝', age: 6, jockey: '松山弘平',     weight: 56, popular: 4, odds:  8.4, style: '差し', recent: [3, 5, 1], course: 'high' },
+      { post: 5, num:  9, name: 'クイーンズウォーク', sex: '牝', age: 5, jockey: '川田将雅',     weight: 56, popular: 5, odds:  9.8, style: '差し', recent: [2, 4, 3], course: 'mid'  },
+      { post: 6, num: 11, name: 'フィアスプライド',   sex: '牝', age: 7, jockey: '戸崎圭太',     weight: 56, popular: 7, odds: 18.5, style: '差し', recent: [4, 2, 5], course: 'mid'  },
+      { post: 7, num: 13, name: 'ナミュール',         sex: '牝', age: 7, jockey: '武豊',         weight: 56, popular: 6, odds: 12.3, style: '追込', recent: [5, 3, 7], course: 'low'  },
+      { post: 8, num: 15, name: 'ライラック',         sex: '牝', age: 7, jockey: '坂井瑠星',     weight: 56, popular: 9, odds: 38.7, style: '差し', recent: [6, 8, 4], course: 'low'  },
+      { post: 8, num: 16, name: 'ウンブライル',       sex: '牝', age: 6, jockey: 'マーフィー',   weight: 56, popular: 8, odds: 22.0, style: '差し', recent: [4, 6, 2], course: 'mid'  },
+    ],
+  },
+  derby: {
+    year: 2026,
+    note: '2026年日本ダービー 想定登録メンバー（プリセット）',
+    entries: [
+      { post: 1, num:  2, name: 'サンプルダービー1', sex: '牡', age: 3, jockey: 'C.ルメール',  weight: 57, popular: 1, odds: 3.2, style: '差し', recent: [1, 2, 1], course: 'mid' },
+      { post: 2, num:  5, name: 'サンプルダービー2', sex: '牡', age: 3, jockey: '川田将雅',    weight: 57, popular: 2, odds: 4.8, style: '先行', recent: [1, 1, 3], course: 'high' },
+      { post: 3, num:  8, name: 'サンプルダービー3', sex: '牡', age: 3, jockey: 'モレイラ',    weight: 57, popular: 3, odds: 6.5, style: '差し', recent: [2, 1, 5], course: 'mid' },
+    ],
+  },
+};
+
+// 騎手名 → スタッツ高速ルックアップ
+const JOCKEY_MAP = Object.fromEntries(JOCKEY_STATS.map(j => [j.name, j]));
+
 window.G1_DATA = {
   races: G1_RACES,
   pastResults: PAST_RESULTS,
   horses: LEGENDARY_HORSES,
   jockeys: JOCKEY_STATS,
+  jockeyMap: JOCKEY_MAP,
   sires: SIRE_STATS,
   trends: RACE_TRENDS,
+  entries: RACE_ENTRIES,
 };

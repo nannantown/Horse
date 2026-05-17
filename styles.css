@@ -586,3 +586,94 @@ body {
   line-height: 1.5;
 }
 [data-theme="dark"] .note { color: var(--text); }
+
+/* ---------- Race Analyzer ---------- */
+.entry-list { display: flex; flex-direction: column; gap: 6px; }
+
+.entry-row {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.entry-head {
+  display: grid;
+  grid-template-columns: 32px 1fr 28px;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+.entry-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 13px;
+}
+.entry-main { min-width: 0; }
+.entry-name {
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.entry-meta {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.entry-expand {
+  background: transparent;
+  border: 0;
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+}
+.entry-edit {
+  padding: 12px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+.edit-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.field-mini { display: flex; flex-direction: column; gap: 3px; }
+.field-mini label {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.field-mini input,
+.field-mini select {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 7px;
+  padding: 7px 9px;
+  font-size: 13px;
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  font-family: inherit;
+}
+.field-mini select {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='M2 4l4 4 4-4' stroke='%235b6b62' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 10px;
+  padding-right: 26px;
+}
