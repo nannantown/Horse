@@ -6,18 +6,18 @@
 <meta name="theme-color" content="#0a4d2e">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>G1 Turf — 競馬分析アプリ</title>
+<title>G1 予想 — 買い目分析</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles.css?v=5">
+<link rel="stylesheet" href="styles.css?v=6">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
 </head>
-<body>
+<body class="no-nav">
 <header class="app-header">
   <div class="header-inner">
     <div class="brand">
       <span class="brand-mark">G1</span>
       <div class="brand-text">
-        <h1>Turf Analytics</h1>
+        <h1>買い目分析</h1>
         <p id="today-label"></p>
       </div>
     </div>
@@ -25,29 +25,9 @@
   </div>
 </header>
 
-<main id="view-root">
-  <!-- views are rendered here -->
-</main>
+<main id="view-root"></main>
 
-<nav class="bottom-nav" role="navigation">
-  <button class="nav-btn active" data-view="home">
-    <span class="nav-icon">🏇</span><span class="nav-label">ホーム</span>
-  </button>
-  <button class="nav-btn" data-view="races">
-    <span class="nav-icon">🏆</span><span class="nav-label">G1</span>
-  </button>
-  <button class="nav-btn" data-view="horses">
-    <span class="nav-icon">⭐</span><span class="nav-label">名馬</span>
-  </button>
-  <button class="nav-btn" data-view="analyze">
-    <span class="nav-icon">📊</span><span class="nav-label">分析</span>
-  </button>
-  <button class="nav-btn" data-view="predict">
-    <span class="nav-icon">🎯</span><span class="nav-label">予想</span>
-  </button>
-</nav>
-
-<script src="data.js?v=5" defer></script>
-<script src="app.js?v=5" defer></script>
+<script src="data.js?v=6" defer></script>
+<script src="app.js?v=6" defer></script>
 </body>
 </html>

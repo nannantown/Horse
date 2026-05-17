@@ -49,6 +49,10 @@ body {
   padding-top: calc(var(--header-h) + var(--safe-top));
   padding-bottom: calc(var(--nav-h) + var(--safe-bottom) + 16px);
 }
+body.no-nav {
+  padding-bottom: calc(var(--safe-bottom) + 24px);
+}
+body.no-nav .bottom-nav { display: none; }
 
 /* Header */
 .app-header {
