@@ -81,10 +81,11 @@
   }
   function upcomingRaces(n = 6) {
     const y = state.today.getFullYear();
+    const todayMid = new Date(state.today.getFullYear(), state.today.getMonth(), state.today.getDate());
     return D.races
       .map(r => {
         const t = getRaceDate(r, y);
-        return { ...r, date: t >= state.today ? t : getRaceDate(r, y + 1) };
+        return { ...r, date: t >= todayMid ? t : getRaceDate(r, y + 1) };
       })
       .sort((a, b) => a.date - b.date)
       .slice(0, n);
