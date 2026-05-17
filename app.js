@@ -180,11 +180,19 @@
 
   // ---------- Main render ----------
   function render() {
-    root.innerHTML = '';
+    renderInner();
+  }
+
+  function renderInner() {
+    const outer = document.getElementById('view-root');
+    outer.innerHTML = '';
+    const root = document.createElement('div'); // eslint-disable-line no-shadow
+    root.className = 'view';
+    outer.appendChild(root);
 
     // Title
-    root.appendChild(h(`<h2 class="view-title" style="margin: 4px 0 4px;">買い目分析</h2>`));
-    root.appendChild(h(`<p class="view-subtitle" style="margin: 0 0 12px;">出走馬を分析して、初心者でも選びやすく</p>`));
+    root.appendChild(h(`<h2 class="view-title">買い目分析</h2>`));
+    root.appendChild(h(`<p class="view-subtitle">出走馬を分析して、初心者でも選びやすく</p>`));
 
     const upcoming = upcomingRaces(10);
     const presetIds = Object.keys(D.entries);
@@ -195,18 +203,16 @@
     const entries = loadEntries(state.predictRaceId);
 
     // Race selector
-    const raceSel = h(`<div class="card" style="padding: 10px 12px; margin-bottom: 10px;">
-      <div class="field" style="margin: 0;">
-        <label for="pa-race" style="font-size: 10px; margin-bottom: 2px;">対象レース</label>
-        <select id="pa-race" style="padding: 8px 10px; font-size: 13px;">
-          ${orderedIds.map(id => {
-            const r = D.races.find(x => x.id === id);
-            if (!r) return '';
-            const preset = D.entries[id] ? ' ⭐プリセット' : '';
-            return `<option value="${id}" ${id === state.predictRaceId ? 'selected' : ''}>${esc(r.name)} (${r.month}/${r.day})${preset}</option>`;
-          }).join('')}
-        </select>
-      </div>
+    const raceSel = h(`<div class="race-select-card">
+      <label for="pa-race">対象レース</label>
+      <select id="pa-race">
+        ${orderedIds.map(id => {
+          const r = D.races.find(x => x.id === id);
+          if (!r) return '';
+          const preset = D.entries[id] ? ' ⭐プリセット' : '';
+          return `<option value="${id}" ${id === state.predictRaceId ? 'selected' : ''}>${esc(r.name)} (${r.month}/${r.day})${preset}</option>`;
+        }).join('')}
+      </select>
     </div>`);
     root.appendChild(raceSel);
     document.getElementById('pa-race').addEventListener('change', e => {
@@ -235,29 +241,45 @@
 
     const ranked = calcAnalysis(entries, race);
 
-    // Hero: 推奨買い目
-    const top4 = ranked.slice(0, 4);
-    const hero = h(`<div class="card pick-hero">
+    // Hero: 今日のおすすめ — dominant ◎ + 3 secondary
+    const [honmei, ...rest] = ranked;
+    const sec = rest.slice(0, 3);
+    const markLabels = { '◎': '本命', '○': '対抗', '▲': '単穴', '△': '連下', '☆': '注目', '✕': '消し' };
+    const markColors = { '○': '#d6dadf', '▲': '#d8a26a', '△': 'rgba(255,255,255,0.55)', '☆': '#c4a8e8' };
+
+    const hero = h(`<div class="pick-hero">
       <div class="pick-hero-head">
         <div>
-          <p class="pick-hero-tag">🎯 今日のおすすめ</p>
+          <span class="pick-hero-eyebrow">今日のおすすめ</span>
           <h3 class="pick-hero-title">${esc(race.name)}</h3>
         </div>
-        <div class="pick-hero-meta">${race.distance}m<br>${esc(race.surface)}</div>
-      </div>
-      <div class="pick-grid"></div>
-    </div>`);
-    const pickGrid = hero.querySelector('.pick-grid');
-    const markColors = { '◎': '#d4a017', '○': '#c0c5c8', '▲': '#c8893f', '△': 'rgba(255,255,255,0.5)' };
-    const markLabels = { '◎': '本命', '○': '対抗', '▲': '単穴', '△': '連下' };
-    top4.forEach(h_ => {
-      const c = markColors[h_.mark] || 'rgba(255,255,255,0.4)';
-      pickGrid.appendChild(h(`<div class="pick-item">
-        <div class="pick-mark" style="color: ${c};">${h_.mark}</div>
-        <div class="pick-info">
-          <div class="pick-label">${markLabels[h_.mark] || ''}</div>
-          <div class="pick-name">${h_.num}. ${esc(h_.name)}</div>
+        <div class="pick-hero-meta">
+          <strong>${race.distance}m</strong>
+          ${esc(race.surface)} / ${esc(race.course)}
         </div>
+      </div>
+      <div class="pick-main">
+        <div class="pick-main-mark">${honmei.mark || '◎'}</div>
+        <div class="pick-main-info">
+          <div class="pick-main-label">本命 HONMEI</div>
+          <div class="pick-main-name">${honmei.num}. ${esc(honmei.name)}</div>
+          <div class="pick-main-sub">${esc(honmei.jockey)} ・ 想定${honmei.popular}人気</div>
+        </div>
+        <div class="pick-main-odds">
+          ${honmei.odds ? `<div><span class="v">${honmei.odds.toFixed(1)}</span><span class="u">倍</span></div>` : ''}
+          <div class="l">想定オッズ</div>
+        </div>
+      </div>
+      <div class="pick-secondary"></div>
+    </div>`);
+    const secWrap = hero.querySelector('.pick-secondary');
+    sec.forEach(h_ => {
+      const c = markColors[h_.mark] || 'rgba(255,255,255,0.55)';
+      secWrap.appendChild(h(`<div class="pick-sec">
+        <div class="pick-sec-mark" style="color: ${c};">${h_.mark}</div>
+        <div class="pick-sec-label">${markLabels[h_.mark] || ''}</div>
+        <div class="pick-sec-name">${esc(h_.name)}</div>
+        <div class="pick-sec-num">${h_.num}番</div>
       </div>`));
     });
     root.appendChild(hero);
@@ -265,33 +287,35 @@
     // Bet recommendations
     const bets = suggestBets(ranked);
     const betCard = h(`<div class="card">
-      <p class="card-title">💰 推奨買い目</p>
+      <p class="card-title">推奨買い目 <span class="accent">RECOMMENDED BETS</span></p>
       <div class="bet-list"></div>
     </div>`);
     const betList = betCard.querySelector('.bet-list');
     bets.forEach(b => {
       betList.appendChild(h(`<div class="bet-row">
-        <div class="bet-type">${esc(b.type)}</div>
+        <div class="bet-meta">
+          <span class="bet-type">${esc(b.type)}</span>
+          <span class="bet-conf bet-conf-${esc(b.conf)}">${esc(b.conf)}</span>
+        </div>
         <div class="bet-combo">${esc(b.combo)}</div>
-        <div class="bet-conf bet-conf-${esc(b.conf)}">${esc(b.conf)}</div>
       </div>`));
     });
     root.appendChild(betCard);
 
     // Legend
     root.appendChild(h(`<div class="legend-card">
-      <div class="legend-row"><span class="legend-mark" style="color:#d4a017;">◎</span><span>本命 — 軸にする最有力馬</span></div>
-      <div class="legend-row"><span class="legend-mark" style="color:#c0c5c8;">○</span><span>対抗 — 本命の相手</span></div>
-      <div class="legend-row"><span class="legend-mark" style="color:#c8893f;">▲</span><span>単穴 — 一発ある一頭</span></div>
-      <div class="legend-row"><span class="legend-mark" style="color:#888;">△</span><span>連下 — 三連系で押さえ</span></div>
+      <div class="legend-row"><span class="legend-mark" style="color:var(--mark-honmei);">◎</span><span>本命 — 軸にする最有力馬</span></div>
+      <div class="legend-row"><span class="legend-mark" style="color:var(--mark-taikou);">○</span><span>対抗 — 本命の相手</span></div>
+      <div class="legend-row"><span class="legend-mark" style="color:var(--mark-tanana);">▲</span><span>単穴 — 一発ある一頭</span></div>
+      <div class="legend-row"><span class="legend-mark" style="color:var(--mark-renka);">△</span><span>連下 — 三連系で押さえ</span></div>
     </div>`));
 
-    // Sort tabs
-    const sortRow = h(`<div class="chip-row" style="margin: 14px 0 8px;">
-      <button class="chip ${state.predictSort==='popular'?'active':''}" data-sort="popular">人気順</button>
-      <button class="chip ${state.predictSort==='score'?'active':''}" data-sort="score">おすすめ順</button>
-      <button class="chip ${state.predictSort==='odds'?'active':''}" data-sort="odds">オッズ順</button>
-      <button class="chip ${state.predictSort==='value'?'active':''}" data-sort="value">妙味順</button>
+    // Sort segmented control
+    const sortRow = h(`<div class="segmented" role="tablist">
+      <button class="seg ${state.predictSort==='popular'?'active':''}" data-sort="popular">人気順</button>
+      <button class="seg ${state.predictSort==='score'?'active':''}" data-sort="score">おすすめ順</button>
+      <button class="seg ${state.predictSort==='odds'?'active':''}" data-sort="odds">オッズ順</button>
+      <button class="seg ${state.predictSort==='value'?'active':''}" data-sort="value">妙味順</button>
     </div>`);
     sortRow.querySelectorAll('[data-sort]').forEach(b => b.addEventListener('click', () => {
       state.predictSort = b.dataset.sort;
@@ -363,8 +387,8 @@
 
   function horseAnalysisCard(horse) {
     const markColor = {
-      '◎': 'var(--accent-2)', '○': '#9aa1a4', '▲': '#c8893f',
-      '△': 'var(--text-muted)', '☆': '#8a6fb8', '✕': 'var(--text-muted)',
+      '◎': 'var(--mark-honmei)', '○': 'var(--mark-taikou)', '▲': 'var(--mark-tanana)',
+      '△': 'var(--mark-renka)',  '☆': 'var(--value)',       '✕': 'var(--text-faint)',
     }[horse.mark] || 'var(--text-muted)';
     const markLabel = {
       '◎': '本命', '○': '対抗', '▲': '単穴', '△': '連下', '☆': '注目', '✕': '消し',
@@ -372,11 +396,15 @@
 
     const cmt = horseComment(horse, horse._rankIdx ?? 99);
     const evBadge = horse.ev != null && horse.ev > 0.3
-      ? `<span class="ev-badge">💎 妙味 EV+${horse.ev.toFixed(2)}</span>`
+      ? `<span class="ev-badge">妙味 EV +${horse.ev.toFixed(2)}</span>`
       : '';
-    const popClass = horse.popular <= 3 ? 'pop-top' : horse.popular <= 6 ? 'pop-mid' : 'pop-low';
+    const popClass = horse.popular === 1
+      ? 'pop-1'
+      : horse.popular <= 3 ? 'pop-top'
+      : horse.popular <= 6 ? 'pop-mid'
+      : 'pop-low';
 
-    return h(`<div class="horse-analyze">
+    return h(`<div class="horse-analyze" data-mark="${esc(horse.mark || '')}">
       <div class="ha-top">
         <div class="ha-mark" style="color: ${markColor};">
           <div class="ha-mark-char">${horse.mark || '−'}</div>
@@ -385,17 +413,17 @@
         <div class="ha-body">
           <div class="ha-row1">
             <span class="ha-popular ${popClass}">${horse.popular}番人気</span>
-            <span class="ha-num">${horse.num}番</span>
+            <span class="ha-num">${horse.num}番 / ${horse.post}枠</span>
           </div>
           <div class="ha-name">${esc(horse.name)}</div>
-          <div class="ha-meta">${esc(horse.sex || '')}${horse.age || ''} ・ ${esc(horse.jockey)} ・ ${horse.weight}kg</div>
+          <div class="ha-meta">${esc(horse.sex || '')}${horse.age || ''}<span class="dot">・</span>${esc(horse.jockey)}<span class="dot">・</span>${horse.weight}kg</div>
         </div>
         <div class="ha-odds">
           ${horse.odds ? `<div class="ha-odds-val">${horse.odds.toFixed(1)}<span class="ha-odds-unit">倍</span></div>` : ''}
           <div class="ha-odds-lbl">想定オッズ</div>
         </div>
       </div>
-      <div class="ha-comment">💬 ${esc(cmt)}</div>
+      <div class="ha-comment">${esc(cmt)}</div>
       <div class="ha-stats">
         <div class="ha-stat"><div class="ha-stat-val">${horse.score}</div><div class="ha-stat-lbl">スコア</div></div>
         <div class="ha-stat"><div class="ha-stat-val">${(horse.prob * 100).toFixed(1)}<span class="ha-stat-unit">%</span></div><div class="ha-stat-lbl">推定勝率</div></div>
