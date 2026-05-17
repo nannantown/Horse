@@ -1,0 +1,19 @@
+{
+  "name": "G1 Turf Analytics",
+  "short_name": "G1 Turf",
+  "description": "JRA G1レースの過去記録・名馬データ・統計分析をスマホで",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a4d2e",
+  "theme_color": "#0a4d2e",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
