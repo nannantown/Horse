@@ -48,14 +48,20 @@
   function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
 
   // ---------- Entries persistence ----------
+  // データバージョン: プリセットを更新したらこの番号を上げる(古いlocalStorageを無視)
+  const ENTRIES_VERSION = 'v3';
+  function entriesKey(raceId) { return `g1-entries-${ENTRIES_VERSION}-${raceId}`; }
   function loadEntries(raceId) {
-    const saved = localStorage.getItem('g1-entries-' + raceId);
+    const saved = localStorage.getItem(entriesKey(raceId));
     if (saved) { try { return JSON.parse(saved); } catch { /* */ } }
+    // Clean up old version keys
+    Object.keys(localStorage).filter(k => k.startsWith('g1-entries-') && !k.includes(ENTRIES_VERSION))
+      .forEach(k => localStorage.removeItem(k));
     const preset = D.entries[raceId];
     return preset ? JSON.parse(JSON.stringify(preset.entries)) : [];
   }
-  function saveEntries(raceId, entries) { localStorage.setItem('g1-entries-' + raceId, JSON.stringify(entries)); }
-  function resetEntries(raceId) { localStorage.removeItem('g1-entries-' + raceId); }
+  function saveEntries(raceId, entries) { localStorage.setItem(entriesKey(raceId), JSON.stringify(entries)); }
+  function resetEntries(raceId) { localStorage.removeItem(entriesKey(raceId)); }
 
   // ---------- Scoring ----------
   function scoreHorse(horse, race, trend) {
