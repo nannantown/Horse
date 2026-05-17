@@ -190,42 +190,17 @@
     root.className = 'view';
     outer.appendChild(root);
 
-    // Title
-    root.appendChild(h(`<h2 class="view-title">買い目分析</h2>`));
-    root.appendChild(h(`<p class="view-subtitle">出走馬を分析して、初心者でも選びやすく</p>`));
-
-    const upcoming = upcomingRaces(10);
-    const presetIds = Object.keys(D.entries);
-    const orderedIds = [...new Set([...presetIds, ...upcoming.map(r => r.id)])];
-    if (!state.predictRaceId) state.predictRaceId = orderedIds[0];
-
+    // Lock to Victoria Mile (今日のG1)
+    state.predictRaceId = 'vic';
     const race = D.races.find(r => r.id === state.predictRaceId);
     const entries = loadEntries(state.predictRaceId);
 
-    // Race selector
-    const raceSel = h(`<div class="race-select-card">
-      <label for="pa-race">対象レース</label>
-      <select id="pa-race">
-        ${orderedIds.map(id => {
-          const r = D.races.find(x => x.id === id);
-          if (!r) return '';
-          const preset = D.entries[id] ? ' ⭐プリセット' : '';
-          return `<option value="${id}" ${id === state.predictRaceId ? 'selected' : ''}>${esc(r.name)} (${r.month}/${r.day})${preset}</option>`;
-        }).join('')}
-      </select>
-    </div>`);
-    root.appendChild(raceSel);
-    document.getElementById('pa-race').addEventListener('change', e => {
-      state.predictRaceId = e.target.value;
-      render();
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    });
+    // Title: race name + meta
+    root.appendChild(h(`<h2 class="view-title">${esc(race.name)}</h2>`));
+    root.appendChild(h(`<p class="view-subtitle">${race.month}月${race.day}日 ・ ${esc(race.course)} ・ ${race.surface}${race.distance}m ・ 全${entries.length}頭</p>`));
 
     if (!entries.length) {
-      root.appendChild(h(`<div class="card"><div class="empty-state" style="padding: 24px 8px;"><div class="icon">🐴</div>このレースは出走馬データ未登録です。<br>下の「馬を追加」から登録してください。</div></div>`));
-      const addBtn = h(`<button class="btn" style="margin-bottom: 12px;">＋ 馬を追加</button>`);
-      addBtn.addEventListener('click', () => addNewHorse(entries));
-      root.appendChild(addBtn);
+      root.appendChild(h(`<div class="card"><div class="empty-state" style="padding: 24px 8px;"><div class="icon">🐴</div>このレースは出走馬データ未登録です。</div></div>`));
       return;
     }
 
@@ -235,80 +210,11 @@
       root.appendChild(h(`<div class="source-banner">
         <div class="sb-row"><span class="sb-tag sb-verified">確定</span><span>枠順・馬名・性齢・騎手・斤量</span></div>
         <div class="sb-row"><span class="sb-tag sb-estimated">推定</span><span>オッズ・人気・脚質・直近3走（公開予想ベース）</span></div>
-        <div class="sb-note">出典: netkeiba / 競馬ラボ / Yahoo!競馬 等の公開情報を統合</div>
+        <div class="sb-note">出典: netkeiba / 競馬ラボ / Yahoo!競馬 等</div>
       </div>`));
     }
 
     const ranked = calcAnalysis(entries, race);
-
-    // Hero: 今日のおすすめ — dominant ◎ + 3 secondary
-    const [honmei, ...rest] = ranked;
-    const sec = rest.slice(0, 3);
-    const markLabels = { '◎': '本命', '○': '対抗', '▲': '単穴', '△': '連下', '☆': '注目', '✕': '消し' };
-    const markColors = { '○': '#d6dadf', '▲': '#d8a26a', '△': 'rgba(255,255,255,0.55)', '☆': '#c4a8e8' };
-
-    const hero = h(`<div class="pick-hero">
-      <div class="pick-hero-head">
-        <div>
-          <span class="pick-hero-eyebrow">今日のおすすめ</span>
-          <h3 class="pick-hero-title">${esc(race.name)}</h3>
-        </div>
-        <div class="pick-hero-meta">
-          <strong>${race.distance}m</strong>
-          ${esc(race.surface)} / ${esc(race.course)}
-        </div>
-      </div>
-      <div class="pick-main">
-        <div class="pick-main-mark">${honmei.mark || '◎'}</div>
-        <div class="pick-main-info">
-          <div class="pick-main-label">本命 HONMEI</div>
-          <div class="pick-main-name">${honmei.num}. ${esc(honmei.name)}</div>
-          <div class="pick-main-sub">${esc(honmei.jockey)} ・ 想定${honmei.popular}人気</div>
-        </div>
-        <div class="pick-main-odds">
-          ${honmei.odds ? `<div><span class="v">${honmei.odds.toFixed(1)}</span><span class="u">倍</span></div>` : ''}
-          <div class="l">想定オッズ</div>
-        </div>
-      </div>
-      <div class="pick-secondary"></div>
-    </div>`);
-    const secWrap = hero.querySelector('.pick-secondary');
-    sec.forEach(h_ => {
-      const c = markColors[h_.mark] || 'rgba(255,255,255,0.55)';
-      secWrap.appendChild(h(`<div class="pick-sec">
-        <div class="pick-sec-mark" style="color: ${c};">${h_.mark}</div>
-        <div class="pick-sec-label">${markLabels[h_.mark] || ''}</div>
-        <div class="pick-sec-name">${esc(h_.name)}</div>
-        <div class="pick-sec-num">${h_.num}番</div>
-      </div>`));
-    });
-    root.appendChild(hero);
-
-    // Bet recommendations
-    const bets = suggestBets(ranked);
-    const betCard = h(`<div class="card">
-      <p class="card-title">推奨買い目 <span class="accent">RECOMMENDED BETS</span></p>
-      <div class="bet-list"></div>
-    </div>`);
-    const betList = betCard.querySelector('.bet-list');
-    bets.forEach(b => {
-      betList.appendChild(h(`<div class="bet-row">
-        <div class="bet-meta">
-          <span class="bet-type">${esc(b.type)}</span>
-          <span class="bet-conf bet-conf-${esc(b.conf)}">${esc(b.conf)}</span>
-        </div>
-        <div class="bet-combo">${esc(b.combo)}</div>
-      </div>`));
-    });
-    root.appendChild(betCard);
-
-    // Legend
-    root.appendChild(h(`<div class="legend-card">
-      <div class="legend-row"><span class="legend-mark" style="color:var(--mark-honmei);">◎</span><span>本命 — 軸にする最有力馬</span></div>
-      <div class="legend-row"><span class="legend-mark" style="color:var(--mark-taikou);">○</span><span>対抗 — 本命の相手</span></div>
-      <div class="legend-row"><span class="legend-mark" style="color:var(--mark-tanana);">▲</span><span>単穴 — 一発ある一頭</span></div>
-      <div class="legend-row"><span class="legend-mark" style="color:var(--mark-renka);">△</span><span>連下 — 三連系で押さえ</span></div>
-    </div>`));
 
     // Sort segmented control
     const sortRow = h(`<div class="segmented" role="tablist">
@@ -323,7 +229,7 @@
     }));
     root.appendChild(sortRow);
 
-    // Horse cards
+    // Horse cards (the main thing)
     const sorted = [...ranked];
     if (state.predictSort === 'popular') sorted.sort((a, b) => a.popular - b.popular);
     else if (state.predictSort === 'odds') sorted.sort((a, b) => (a.odds || 999) - (b.odds || 999));
@@ -333,37 +239,7 @@
     sorted.forEach((h_) => listWrap.appendChild(horseAnalysisCard(h_)));
     root.appendChild(listWrap);
 
-    // Edit panel (collapsed)
-    const editToggle = h(`<button class="btn secondary edit-toggle" style="margin-top: 16px;">⚙️ 詳細編集モード ▾</button>`);
-    const editPanel = h(`<div class="card edit-panel" hidden style="margin-top: 8px;">
-      <p class="card-title">出走馬の編集</p>
-      <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 12px;">各馬をタップして編集。値を変えると自動で再分析されます。</p>
-    </div>`);
-    entries.forEach((horse, i) => editPanel.appendChild(entryRow(horse, i, entries)));
-    const editActions = h(`<div style="display:flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
-      <button class="btn" id="pa-add" style="flex: 1 1 140px; padding: 10px; font-size: 13px;">＋ 馬を追加</button>
-      ${D.entries[state.predictRaceId] ? `<button class="btn secondary" id="pa-reset" style="flex: 1 1 140px; padding: 10px; font-size: 13px;">↻ プリセットに戻す</button>` : ''}
-    </div>`);
-    editPanel.appendChild(editActions);
-
-    editToggle.addEventListener('click', () => {
-      const open = !editPanel.hidden;
-      editPanel.hidden = open;
-      editToggle.textContent = open ? '⚙️ 詳細編集モード ▾' : '⚙️ 詳細編集モード ▴';
-    });
-    root.appendChild(editToggle);
-    root.appendChild(editPanel);
-
-    editPanel.querySelector('#pa-add').addEventListener('click', () => addNewHorse(entries));
-    const resetBtn = editPanel.querySelector('#pa-reset');
-    if (resetBtn) resetBtn.addEventListener('click', () => {
-      if (confirm('編集をリセットしてプリセットに戻しますか？')) {
-        resetEntries(state.predictRaceId);
-        render();
-      }
-    });
-
-    root.appendChild(h(`<div class="note">⚠️ スコアと買い目は公開予想・過去傾向に基づく簡易シミュレーションです。実際の馬券購入は自己責任でお願いします。</div>`));
+    root.appendChild(h(`<div class="note">⚠️ スコアは公開予想・過去傾向に基づく簡易シミュレーション。馬券購入は自己責任で。</div>`));
   }
 
   function addNewHorse(entries) {
